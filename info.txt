@@ -1,0 +1,6 @@
+https://github.com/kidino/app-2502 
+
+
+cp .env.example .env 
+
+
