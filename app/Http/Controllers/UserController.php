@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\DataTables\UsersDataTable;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Log;
 use App\Models\Scopes\UserNoteScope;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\UserUpdatedByAdmin;
@@ -111,4 +112,11 @@ class UserController extends Controller
         return redirect( route('user.index') )->with('success', 'User updated successfully.');
 
     }
+
+    
+    public function datatable(UsersDataTable $dataTable)
+    {
+        return $dataTable->render('user.datatable');
+    }
+
 }

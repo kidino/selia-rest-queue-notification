@@ -45,6 +45,15 @@
                         @endif
                         {{ __('Notifications') }}
                     </x-nav-link>
+
+                    <!-- Notifications Menu -->
+                    <x-nav-link :href="route('chinook.main')" :active="request()->routeIs('chinook.*')" >
+                        {{ __('Chinook') }}
+                    </x-nav-link>
+
+
+
+                    
                 </div>
             </div>
 

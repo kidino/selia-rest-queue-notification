@@ -10,10 +10,15 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\VehicleRegistrationController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\Chinook\MainController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Chinook\AlbumController;
+use App\Http\Controllers\Chinook\TrackController;
+use App\Http\Controllers\Chinook\CustomerController;
+use App\Http\Controllers\Chinook\EmployeeController;
 use App\Http\Controllers\VacancyApplicationController;
+use App\Http\Controllers\VehicleRegistrationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -170,5 +175,51 @@ Route::middleware(['auth', 'can:is-admin'])->group(function () {
     Route::resource('vacancies', VacancyController::class)->except(['destroy']);
     Route::get('vacancies/{vacancy}/applications', [VacancyApplicationController::class, 'index'])->name('vacancies.applications.index');
 });
+
+//---- Chinook 
+
+Route::get('/chinook', [MainController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('chinook.main');
+
+Route::get('/chinook/employee1', [EmployeeController::class, 'employee1'])
+    ->middleware(['auth'])
+    ->name('chinook.employee.nplus1.bad');
+
+Route::get('/chinook/employee2', [EmployeeController::class, 'employee2'])
+    ->middleware(['auth'])
+    ->name('chinook.employee.nplus1.fixed');
+
+    Route::get('/chinook/customer1', [CustomerController::class, 'index1'])
+    ->middleware(['auth'])
+    ->name('chinook.customer.index1');
+
+    Route::get('/chinook/customer2', [CustomerController::class, 'index2'])
+    ->middleware(['auth'])
+    ->name('chinook.customer.index2');
+    
+    Route::get('/chinook/albums1', [AlbumController::class, 'index1'])
+    ->middleware(['auth'])
+    ->name('chinook.album.index1');
+
+    Route::get('/chinook/albums2', [AlbumController::class, 'index2'])
+    ->middleware(['auth'])
+    ->name('chinook.album.index2');
+
+    Route::get('/chinook/albums3', [AlbumController::class, 'index3'])
+    ->middleware(['auth'])
+    ->name('chinook.album.index3');
+
+    Route::get('/chinook/tracks1', [TrackController::class, 'allColumns'])
+    ->middleware(['auth'])
+    ->name('chinook.tracks.all_columns');
+
+    Route::get('/chinook/tracks2', [TrackController::class, 'selectedColumns'])
+    ->middleware(['auth'])
+    ->name('chinook.tracks.selected_columns');
+
+
+    Route::get('/users-datatable', [UserController::class, 'datatable'])->name('users.datatatable');
+
 
 require __DIR__.'/auth.php';
