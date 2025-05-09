@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use App\Models\Customer;
+use App\Models\Employee;
 use App\Mail\HappyBirthday;
 use App\Models\StreamedNotification;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Chinook\MainController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Chinook\AlbumController;
@@ -24,9 +27,49 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', [
+    DashboardController::class, 'index'
+])->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::get('/dashboard2', [
+    DashboardController::class, 'index2'
+])->middleware(['auth', 'verified'])->name('dashboard2');
+
+Route::get('/dashboard3', [
+    DashboardController::class, 'index3'
+])->middleware(['auth', 'verified'])->name('dashboard3');
+
+Route::get('/aj/total-users', function () {
+
+    sleep(3);
+    return response()->json([ 'value' => User::count()]);
+})->middleware(['auth', 'verified'])->name('aj-total-users');
+
+Route::get('/aj/total-employees', function () {
+    sleep(2);
+
+    return response()->json([ 'value' => Employee::count()]);
+})->middleware(['auth', 'verified'])->name('aj-total-employees');
+
+Route::get('/aj/total-customers', function () {
+    sleep(5);
+
+    return response()->json([ 'value' => Customer::count()]);
+})->middleware(['auth', 'verified'])->name('aj-total-customers');
+
+Route::get('/aj/daily-sales', [DashboardController::class, 'aj_daily_sales'])->name('aj-daily-sales');
+
+// -- bad cache example
+Route::get('/badcache', [
+    DashboardController::class, 'badcache'
+])->middleware(['auth', 'verified'])->name('badcache');
+
+
 
 Route::middleware('auth')->name('user.')->group(function(){
 
@@ -220,6 +263,16 @@ Route::get('/chinook/employee2', [EmployeeController::class, 'employee2'])
 
 
     Route::get('/users-datatable', [UserController::class, 'datatable'])->name('users.datatatable');
+
+    Route::get('/users-count', function () {
+        // return User::count();
+
+        return Cache::remember('total_users', 20, function () {
+            return User::count();
+        });
+    
+    });
+    
 
 
 require __DIR__.'/auth.php';

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Notifications\CustomPasswordResetNotification;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\CustomPasswordResetNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -35,6 +36,17 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+    protected static function booted()
+    {
+        static::created(function(){
+            Cache::forget('total_users');            
+        });
+
+        
+        static::deleted(fn () => Cache::forget('total_users'));
+    }
+
 
     /**
      * Get the attributes that should be cast.
