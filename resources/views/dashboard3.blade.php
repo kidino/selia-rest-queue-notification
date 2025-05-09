@@ -12,23 +12,33 @@
 
                 <div class="bg-white p-6 rounded-lg shadow col-span-1 lg:col-span-2">
                     <h2>Total Users</h2>
-                    <p class="text-3xl font-bold" id="widget-total-users"> . . . </p>
+                    <p class="text-3xl font-bold" id="widget-total-users">
+                        <span class="loading-spinner" style="display: inline-block; border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite;"></span>
+                    </p>
                 </div>
 
                 <div class="bg-white p-6 rounded-lg shadow col-span-1 lg:col-span-2">
                     <h2>Total Employees</h2>
-                    <p class="text-3xl font-bold aj-data" data-aj-url="{{ route('aj-total-employees') }}"> . . .</p>
+                    <p class="text-3xl font-bold aj-data" data-aj-url="{{ route('aj-total-employees') }}">
+                    <span class="loading-spinner" style="display: inline-block; border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite;"></span>
+
+                    </p>
                 </div>
 
                
                 <div class="bg-white p-6 rounded-lg shadow col-span-1 lg:col-span-2">
                     <h2>Total Customers</h2>
-                    <p class="text-3xl font-bold aj-data" data-aj-url="{{ route('aj-total-customers') }}"> . . . </p>
+                    <p class="text-3xl font-bold aj-data" data-aj-url="{{ route('aj-total-customers') }}">
+                    <span class="loading-spinner" style="display: inline-block; border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite;"></span>
+
+
+                    </p>
                 </div>
 
                 <div class="bg-white p-6 rounded-lg shadow col-span-1 lg:col-span-6">
                     <h2>Daily Sales</h2>
-                    
+                    <span id="graph-spinner" class="loading-spinner" style="display: inline-block; border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite;"></span>
+
                     <canvas class="graph"></canvas>
                 </div>
 
@@ -77,6 +87,9 @@
         fetch("{{ route('aj-daily-sales') }}")
             .then(response => response.json())
             .then(data => {
+
+                document.getElementById('graph-spinner').style.display = 'none'; // Hide the spinner
+
                 const ctx = document.querySelector('.graph').getContext('2d'); // Ensure this references the <canvas>
                 new Chart(ctx, {
                     type: 'bar', // Changed from 'line' to 'bar'
@@ -119,6 +132,13 @@
             .catch(error => console.error('Error fetching daily sales data:', error));
     });
 </script>
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
 @endpush
 
 </x-app-layout>

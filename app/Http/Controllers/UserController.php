@@ -13,6 +13,7 @@ use App\Models\Scopes\UserNoteScope;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\UserUpdatedByAdmin;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -25,14 +26,17 @@ class UserController extends Controller
 
     public function index() {
 
-        // $users = User::with('roles')->withCount('notes')->paginate(10);
-
-        // to override Scope Rule
-        $users = User::with('roles')
-        ->withCount(['notes' => function ($query) {
-            $query->withoutGlobalScope(UserNoteScope::class); 
-        }])
-        ->paginate(10);
+        $users = Cache::tags(['users_page'])->remember(
+            'users_page_' . request('page', 1) . '_per_page_' . request('per_page', 10),
+            now()->addMinutes(10),
+            function () {
+                return User::with('roles')
+                    ->withCount(['notes' => function ($query) {
+                        $query->withoutGlobalScope(UserNoteScope::class); 
+                    }])
+                    ->paginate(10);
+            }
+        );
 
         return view('user.index', compact('users'));
     }
